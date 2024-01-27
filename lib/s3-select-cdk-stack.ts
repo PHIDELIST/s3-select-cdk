@@ -23,8 +23,18 @@ export class S3SelectCdkStack extends Stack {
       retainOnDelete: false,
     });
 
-    const language = this.node.tryGetContext('language') || 'typescript';
-    const fn = language === "typescript" ? 
+    const language = this.node.tryGetContext('language') || 'python';
+    const fn = language === "python" ? 
+    new lambda.Function(this, "S3SelectHandler", {
+      runtime: lambda.Runtime.PYTHON_3_9,
+      handler: "lambda-handler.handler",
+      code: lambda.Code.fromAsset("lambda"),
+      environment: {
+        BUCKET_NAME: bucket.bucketName,
+        SAMPLE_DATA: "sample_data.csv",
+        REGION: Stack.of(this).region
+      }
+    }) :
       new nodejslambda.NodejsFunction(this, "S3SelectHandler", {
         runtime: lambda.Runtime.NODEJS_14_X,
         handler: "handler",
@@ -34,18 +44,8 @@ export class S3SelectCdkStack extends Stack {
           SAMPLE_DATA: "sample_data.csv",
           REGION: Stack.of(this).region,
         },
-      }) :
-      new lambda.Function(this, "S3SelectHandler", {
-        runtime: lambda.Runtime.PYTHON_3_9,
-        handler: "lambda-handler.handler",
-        code: lambda.Code.fromAsset("lambda"),
-        environment: {
-          BUCKET_NAME: bucket.bucketName,
-          SAMPLE_DATA: "sample_data.csv",
-          REGION: Stack.of(this).region
-        }
       })
-
+  
     bucket.grantRead(fn);
 
     const apigw = new apigateway.LambdaRestApi(this, "Endpoint", {
