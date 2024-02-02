@@ -15,7 +15,7 @@
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
 ## Architecture
-![s3-select-1](https://github.com/PHIDELIST/s3-select-cdk/assets/64526896/140fec0a-a757-4b35-9bf9-eb30d59bc0c0)
+
 
 ## Getting a single record
 ![image](https://github.com/PHIDELIST/s3-select-cdk/assets/64526896/a1aeae9d-8b2c-48ed-8497-116c85c89d42)
